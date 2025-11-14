@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subscriber extends Model
 {
-    use HasFactory; // <-- add this
+    use HasFactory; //
 
     protected $fillable = [
         'email',
         'name',
     ];
-    public function user()
+
+    public function newsletters()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(Newsletter::class, 'newsletter_subscriber');
     }
 }
