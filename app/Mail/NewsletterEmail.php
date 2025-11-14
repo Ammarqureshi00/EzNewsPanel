@@ -42,7 +42,7 @@ class NewsletterEmail extends Mailable
         );
     }
 
-    
+
     /**
      * Get the attachments for the message.
      *
