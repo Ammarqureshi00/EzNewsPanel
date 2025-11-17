@@ -1,95 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-app-layout>
+      <div class="py-12">
+            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                  <div class="card shadow-sm">
 
-<head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Edit Newsletter</title>
+                        {{-- Card Header --}}
+                        <div
+                              class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                              <h4 class="mb-0">✏ Edit Newsletter</h4>
+                        </div>
 
-      <!-- Bootstrap -->
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+                        {{-- Card Body --}}
+                        <div class="card-body">
 
-      <style>
-            body {
-                  background: #f5f6fa;
-            }
+                              {{-- Form --}}
+                              <form action="{{ route('admin.newsletters.update', $newsletter->id) }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
 
-            .container-box {
-                  max-width: 800px;
-                  margin-top: 40px;
-            }
+                                    {{-- Title --}}
+                                    <div class="mb-3">
+                                          <label for="title" class="form-label">Newsletter Title</label>
+                                          <input type="text" id="title" name="title" class="form-control"
+                                                value="{{ $newsletter->title }}" required>
+                                          @error('title')
+                                          <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </div>
 
-            .card-header {
-                  background: #0d6efd !important;
-                  color: white !important;
-            }
-      </style>
-</head>
+                                    {{-- Content --}}
+                                    <div class="mb-3">
+                                          <label for="content" class="form-label">Content</label>
+                                          <textarea id="content" name="content" class="form-control" rows="6"
+                                                required>{{ $newsletter->content }}</textarea>
+                                          @error('content')
+                                          <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </div>
 
-<body>
+                                    {{-- Current Image --}}
+                                    <div class="mb-3">
+                                          <label class="form-label">Current Image</label><br>
+                                          @if($newsletter->image)
+                                          <img src="{{ asset('uploads/newsletters/' . $newsletter->image) }}"
+                                                width="150" class="rounded border mb-2">
+                                          @else
+                                          <p class="text-muted">No image uploaded.</p>
+                                          @endif
+                                    </div>
 
-      <div class="container container-box">
+                                    {{-- Upload New Image --}}
+                                    <div class="mb-3">
+                                          <label for="image" class="form-label">Upload New Image (optional)</label>
+                                          <input type="file" id="image" name="image" class="form-control">
+                                          @error('image')
+                                          <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-4">
+                                          {{-- Buttons --}}
+                                          <div class="d-flex justify-content-center gap-3 mt-4">
+                                                <a href="{{ route('admin.newsletters.index') }}"
+                                                      class="btn btn-secondary px-4">← Back</a>
+                                                <button type="submit" class="btn btn-primary px-4">Update
+                                                      Newsletter</button>
+                                          </div>
+                                    </div>
 
-            <div class="card shadow-sm">
-                  <div class="card-header">
-                        <h4 class="mb-0">✏ Edit Newsletter</h4>
-                  </div>
+                              </form>
 
-                  <div class="card-body">
-
-                        <form action="{{ route('admin.newsletters.update', $newsletter->id) }}" method="POST"
-                              enctype="multipart/form-data">
-                              @csrf
-                              @method('PUT')
-
-                              <!-- Title -->
-                              <div class="mb-3">
-                                    <label class="form-label">Newsletter Title</label>
-                                    <input type="text" name="title" class="form-control"
-                                          value="{{ $newsletter->title }}" required>
-                              </div>
-
-                              <!-- Content -->
-                              <div class="mb-3">
-                                    <label class="form-label">Content</label>
-                                    <textarea name="content" class="form-control" rows="6"
-                                          required>{{ $newsletter->content }}</textarea>
-                              </div>
-
-                              <!-- Current Image -->
-                              <div class="mb-3">
-                                    <label class="form-label">Current Image</label><br>
-
-                                    @if($newsletter->image)
-                                    <img src="{{ asset('uploads/newsletters/' . $newsletter->image) }}" width="150"
-                                          class="rounded border mb-2">
-                                    @else
-                                    <p class="text-muted">No image uploaded.</p>
-                                    @endif
-                              </div>
-
-                              <!-- Upload New Image -->
-                              <div class="mb-3">
-                                    <label class="form-label">Upload New Image (optional)</label>
-                                    <input type="file" name="image" class="form-control">
-                              </div>
-
-                              <!-- Buttons -->
-                              <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.newsletters.index') }}" class="btn btn-secondary">←
-                                          Back</a>
-
-                                    <button type="submit" class="btn btn-primary">
-                                          Update Newsletter
-                                    </button>
-                              </div>
-
-                        </form>
+                        </div>
                   </div>
             </div>
-
       </div>
-
-</body>
-
-</html>
+</x-app-layout>

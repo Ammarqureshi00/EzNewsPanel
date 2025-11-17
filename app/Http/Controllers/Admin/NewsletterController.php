@@ -24,7 +24,7 @@ class NewsletterController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:30'
         ]);
 
         $data = $request->only(['title', 'content']);

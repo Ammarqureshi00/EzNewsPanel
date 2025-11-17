@@ -4,11 +4,12 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Subsriber\SubscribersController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/newsletter/{newsletter}', [HomeController::class, 'show'])->name('newsletter.show');
+Route::post('/newsletter/{newsletter}/subscribe', [HomeController::class, 'subscribe'])->name('subscribe');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -25,7 +26,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/newsletters', NewsletterController::class)
         ->names('admin.newsletters');
 });
+Route::middleware(['auth', 'subscriber'])->group(function () {
 
-
-
+    Route::get('subscribers/dashboard', [SubscribersController::class, 'index'])
+        ->name('subscribers.dashboard');
+});
 require __DIR__ . '/auth.php';
