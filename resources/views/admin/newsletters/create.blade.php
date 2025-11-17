@@ -1,40 +1,63 @@
 <x-app-layout>
-      <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                  Create Newsletter
-            </h2>
-      </x-slot>
       <div class="py-12">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                  <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                        <form action="{{route('admin.newsletters.store')}}" method="POST" enctype="multipart/form-data">
-                              @csrf
+                  <div class="card shadow-sm">
 
-                              <div class="mb-4">
-                                    <x-input-label for="title" :value="__('Title')" />
-                                    <x-text-input id="title" name="title" type="text" class="block w-full mt-1"
-                                          required />
-                                    <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                              </div>
+                        <div
+                              class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                              <h3 class="card-title mb-0">Create Newsletter</h3>
+                        </div>
 
-                              <div class="mb-4">
-                                    <x-input-label for="content" :value="__('Content')" />
-                                    <textarea id="content" name="content"
-                                          class="block w-full mt-1 border-gray-300 rounded-md shadow-sm" rows="5"
-                                          required></textarea>
-                                    <x-input-error :messages="$errors->get('content')" class="mt-2" />
-                              </div>
+                        <div class="card-body">
 
-                              <div class="mb-4">
-                                    <x-input-label for="image" :value="__('Image (optional)')" />
-                                    <input type="file" name="image" id="image" class="block w-full mt-1" />
-                                    <x-input-error :messages="$errors->get('image')" class="mt-2" />
-                              </div>
 
-                              <div class="mt-4">
-                                    <x-primary-button class="w-full">Create Newsletter</x-primary-button>
-                              </div>
-                        </form>
+
+                              <form action="{{ route('admin.newsletters.store') }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+
+                                    {{-- Title --}}
+                                    <div class="mb-3">
+                                          <label for="title" class="form-label">Title</label>
+                                          <input type="text" id="title" name="title" class="form-control" required>
+                                          @error('title')
+                                          <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </div>
+
+                                    {{-- Content --}}
+                                    <div class="mb-3">
+                                          <label for="content" class="form-label">Content</label>
+                                          <textarea id="content" name="content" class="form-control" rows="5"
+                                                required></textarea>
+                                          @error('content')
+                                          <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </div>
+
+                                    {{-- Image --}}
+                                    <div class="mb-3">
+                                          <label for="image" class="form-label">Image (optional)</label>
+                                          <input type="file" id="image" name="image" class="form-control">
+                                          @error('image')
+                                          <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-4">
+                                          {{-- Submit Button --}}
+                                          <button type="submit" class="btn btn-primary">
+                                                Create Newsletter
+                                          </button>
+
+                                          {{-- Back Button --}}
+                                          <a href="{{ route('admin.newsletters.index') }}" class="btn btn-secondary">
+                                                &larr; Back
+                                          </a>
+                                    </div>
+                              </form>
+
+
+                        </div>
                   </div>
             </div>
       </div>

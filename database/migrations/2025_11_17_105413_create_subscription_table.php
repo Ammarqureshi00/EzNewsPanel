@@ -11,25 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('newsletter_subscriber', function (Blueprint $table) {
+        Schema::create('subscribers', function (Blueprint $table) {
             $table->id();
+            $table->string('email')->unique();
 
             $table->foreignId('newsletter_id')
                 ->constrained('newsletters')
                 ->onDelete('cascade');
 
-            $table->foreignId('subscriber_id')
-                ->constrained('subscribers')
-                ->onDelete('cascade');
-
             $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('newsletter_subscriber');
+        Schema::dropIfExists('subscriptions');
     }
 };

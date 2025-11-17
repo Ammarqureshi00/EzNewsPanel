@@ -1,46 +1,83 @@
-<div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-      <h2 class="text-2xl font-bold mb-6">{{ isset($newsletter) ? 'Edit Newsletter' : 'Create Newsletter' }}</h2>
+<x-app-layout>
 
-      <form action="{{ isset($newsletter) ? route('admin.newsletters.update', $newsletter->id) :}" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            @if(isset($newsletter))
-            @method('PUT')
-            @endif
+      <div class="flex">
+            <!-- Sidebar -->
+            <div class="w-64 bg-gray-800 text-white min-h-screen p-6">
+                  <h4 class="text-center mb-4 text-lg font-semibold">Admin Panel</h4>
 
-            <!-- Title -->
-            <div class="mb-4">
-                  <x-input-label for="title" :value="__('Title')" />
-                  <x-text-input id="title" name="title" type="text" class="mt-1 block w-full"
-                        :value="old('title', $newsletter->title ?? '')" required autofocus />
-                  <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                  <a href="{{ route('admin.dashboard') }}"
+                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Dashboard</a>
+                  <a href="{{ route('admin.newsletters.index') }}"
+                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">All
+                        Newsletter</a>
+                  <a href="{{ route('admin.newsletters.create') }}"
+                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Create Newsletter</a>
+                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Subscribers</a>
+                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Settings</a>
+                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700">Logout</a>
             </div>
 
-            <!-- Content -->
-            <div class="mb-4">
-                  <x-input-label for="content" :value="__('Content')" />
-                  <textarea id="content" name="content" rows="6"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
-                        required>{{ old('content', $newsletter->content ?? '') }}</textarea>
-                  <x-input-error :messages="$errors->get('content')" class="mt-2" />
-            </div>
+            <!-- Main Content -->
+            <div class="flex-1 p-6 bg-gray-100">
+                  <div class="flex justify-end mb-4">
+                        <a href="{{ route('admin.newsletters.create') }}" class="btn btn-success">+ Create
+                              Newsletter</a>
+                  </div>
 
-            <!-- Image -->
-            <div class="mb-4">
-                  <x-input-label for="image" :value="__('Image (Optional)')" />
-                  <input type="file" id="image" name="image" class="mt-1 block w-full">
-                  @if(isset($newsletter) && $newsletter->image)
-                  <img src="{{ asset('uploads/newsletters/'.$newsletter->image) }}"
-                        class="mt-2 w-32 h-32 object-cover rounded-md">
-                  @endif
-                  <x-input-error :messages="$errors->get('image')" class="mt-2" />
-            </div>
+                  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="bg-blue-600 text-white px-4 py-2 font-semibold">
+                              All Newsletters
+                        </div>
 
-            <!-- Submit -->
-            <div class="flex justify-end">
-                  <x-primary-button>
-                        {{ isset($newsletter) ? __('Update Newsletter') : __('Create Newsletter') }}
-                  </x-primary-button>
+                        <div class="p-4">
+                              @if($newsletters->count() > 0)
+                              <table class="table-auto w-full border border-gray-300">
+                                    <thead class="bg-gray-100">
+                                          <tr>
+                                                <th class="border px-4 py-2 text-left">Title</th>
+                                                <th class="border px-4 py-2 text-left">Content</th>
+                                                <th class="border px-4 py-2 text-left">Image</th>
+                                                <th class="border px-4 py-2 text-left">Date</th>
+                                                <th class="border px-4 py-2 text-left">Actions</th>
+                                          </tr>
+                                    </thead>
+                                    <tbody>
+                                          @foreach($newsletters as $newsletter)
+                                          <tr>
+                                                <td class="border px-4 py-2">{{ $newsletter->title }}</td>
+                                                <td class="border px-4 py-2">{{ Str::limit($newsletter->content, 50) }}
+                                                </td>
+                                                <td class="border px-4 py-2">
+                                                      @if($newsletter->image)
+                                                      <img src="{{ asset('uploads/newsletters/' . $newsletter->image) }}"
+                                                            width="60" class="rounded">
+                                                      @else
+                                                      <span class="text-gray-500">No Image</span>
+                                                      @endif
+                                                </td>
+                                                <td class="border px-4 py-2">{{ $newsletter->created_at->format('d M Y')
+                                                      }}</td>
+                                                <td class="border px-4 py-2">
+                                                      <a href="{{ route('admin.newsletters.edit', $newsletter->id) }}"
+                                                            class="btn btn-warning btn-sm">Edit</a>
+
+                                                      <form action="{{ route('admin.newsletters.destroy', $newsletter->id) }}"
+                                                            method="POST" class="inline-block">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-danger btn-sm"
+                                                                  onclick="return confirm('Are you sure?')">Delete</button>
+                                                      </form>
+                                                </td>
+                                          </tr>
+                                          @endforeach
+                                    </tbody>
+                              </table>
+                              @else
+                              <p class="text-gray-500">No newsletters found.</p>
+                              @endif
+                        </div>
+                  </div>
             </div>
-      </form>
-</div>
+      </div>
+</x-app-layout>

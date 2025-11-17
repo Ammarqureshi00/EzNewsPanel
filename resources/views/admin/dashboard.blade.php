@@ -1,92 +1,150 @@
 <x-app-layout>
-      <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                  Admin Dashboard
-            </h2>
-      </x-slot>
 
-      <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div class="flex">
+            <!-- Sidebar -->
+            <div class="w-64 bg-gray-800 text-white min-h-screen p-6">
+                  <h4 class="text-center mb-4 text-lg font-semibold">Admin Panel</h4>
+
+                  <a href="{{ route('admin.dashboard') }}"
+                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Dashboard</a>
+
+                  <a href="{{ route('admin.newsletters.index') }}"
+                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">All Newsletter</a>
+                  <a href="{{ route('admin.newsletters.create') }}"
+                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Create
+                        Newsletter</a>
+                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Settings</a>
+                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700">Logout</a>
+            </div>
+            <div class="flex-1 p-6 bg-gray-100">
 
                   <!-- Welcome Message -->
-                  <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold text-gray-800">Welcome, Admin!</h1>
-                        <p class="text-gray-600 mt-2">
-                              Manage your newsletters and subscribers efficiently from this dashboard.
+                  <div class="text-center mb-5">
+                        @if(auth()->check())
+                        <h1 class="display-5 fw-bold">Welcome, {{ auth()->user()->name }}</h1>
+                        @else
+                        <h1 class="display-5 fw-bold">Welcome, Admin</h1>
+                        @endif
+                        <p class="text-muted">Manage your newsletters and subscribers efficiently from this dashboard.
                         </p>
                   </div>
 
-                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-                        <!-- Create Newsletter Form -->
-                        <div class="bg-white shadow-md rounded-lg p-6">
-                              <h2 class="text-xl font-semibold text-blue-600 mb-4">Create Newsletter</h2>
-                              <form action="{{ route('admin.newsletters.store') }}" method="POST"
-                                    enctype="multipart/form-data" class="space-y-4">
-                                    @csrf
-
-                                    <div>
-                                          <x-input-label for="title" :value="__('Title')" />
-                                          <x-text-input id="title" name="title" class="mt-1 block w-full" required />
-                                          <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                  <!-- Top Stats Cards -->
+                  <div class="row mb-4">
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <div class="card shadow-sm">
+                                    <div class="card-body text-center">
+                                          <h6 class="text-muted">Total Newsletters</h6>
+                                          <h3 class="fw-bold">{{ $newsletters->count() }}</h3>
                                     </div>
-
-                                    <div>
-                                          <x-input-label for="content" :value="__('Content')" />
-                                          <textarea id="content" name="content" rows="4"
-                                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
-                                                required></textarea>
-                                          <x-input-error :messages="$errors->get('content')" class="mt-2" />
+                              </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <div class="card shadow-sm">
+                                    <div class="card-body text-center">
+                                          <h6 class="text-muted">Total Subscribers</h6>
+                                          <h3 class="fw-bold">{{ $subscribers->count() }}</h3>
                                     </div>
-
-                                    <div>
-                                          <x-input-label for="image" :value="__('Image (optional)')" />
-                                          <input type="file" id="image" name="image"
-                                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm" />
+                              </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <div class="card shadow-sm">
+                                    <div class="card-body text-center">
+                                          <h6 class="text-muted">Sent This Month</h6>
+                                          <h3 class="fw-bold">{{ $sentThisMonth }}</h3>
                                     </div>
+                              </div>
+                        </div>
+                        {{-- <div class="col-sm-6 col-lg-3 mb-3">
+                              <div class="card shadow-sm">
+                                    <div class="card-body text-center">
+                                          <h6 class="text-muted">Drafts</h6>
+                                          <h3 class="fw-bold">{{ $drafts }}</h3>
+                                    </div>
+                              </div>
+                        </div> --}}
+                  </div>
 
-                                    <x-primary-button class="w-full mt-2">Create Newsletter</x-primary-button>
-                              </form>
+                  <!-- Charts & Recent Activity -->
+                  <div class="row mb-4">
+                        <!-- Subscribers Growth Chart -->
+                        <div class="col-lg-8 mb-3">
+                              <div class="card shadow-sm">
+                                    <div class="card-body">
+                                          <h5 class="card-title">Subscribers Growth</h5>
+                                          <canvas id="subscribersChart" height="150"></canvas>
+                                    </div>
+                              </div>
                         </div>
 
-                        <!-- Subscribers Table -->
-                        {{-- <div class="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
-                              <h2 class="text-xl font-semibold text-green-600 mb-4">Subscribers</h2>
-                              <table class="min-w-full border border-gray-200">
-                                    <thead class="bg-gray-100 text-gray-700 uppercase text-sm font-medium">
-                                          <tr>
-                                                <th class="px-4 py-2 border">ID</th>
-                                                <th class="px-4 py-2 border">Name</th>
-                                                <th class="px-4 py-2 border">Email</th>
-                                                <th class="px-4 py-2 border">Subscribed Newsletters</th>
-                                          </tr>
-                                    </thead>
-                                    <tbody class="text-gray-700 text-sm">
-                                          @forelse($subscribers as $subscriber)
-                                          <tr class="hover:bg-gray-50">
-                                                <td class="px-4 py-2 border">{{ $subscriber->id }}</td>
-                                                <td class="px-4 py-2 border">{{ $subscriber->name }}</td>
-                                                <td class="px-4 py-2 border">{{ $subscriber->email }}</td>
-                                                <td class="px-4 py-2 border">
-                                                      @foreach($subscriber->newsletters as $news)
-                                                      <span
-                                                            class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1">
-                                                            {{ $news->title }}
-                                                      </span>
-                                                      @endforeach
-                                                </td>
-                                          </tr>
-                                          @empty
-                                          <tr>
-                                                <td colspan="4" class="px-4 py-2 text-center text-gray-500">No
-                                                      subscribers found.</td>
-                                          </tr>
-                                          @endforelse
-                                    </tbody>
-                              </table>
-                        </div> --}}
-
+                        <!-- Recent Newsletters -->
+                        <div class="col-lg-4 mb-3">
+                              <div class="card shadow-sm">
+                                    <div class="card-body">
+                                          <h5 class="card-title">Recent Newsletters</h5>
+                                          <ul class="list-group list-group-flush">
+                                                @forelse($recentNewsletters as $newsletter)
+                                                <li
+                                                      class="list-group-item d-flex justify-content-between align-items-center">
+                                                      {{ $newsletter->title }}
+                                                      <span class="text-muted small">{{
+                                                            $newsletter->created_at->format('d M')
+                                                            }}</span>
+                                                </li>
+                                                @empty
+                                                <li class="list-group-item text-center text-muted">No newsletters found.
+                                                </li>
+                                                @endforelse
+                                          </ul>
+                                    </div>
+                              </div>
+                        </div>
                   </div>
+
+                  <!-- Shortcut Action Buttons -->
+                  <div class="row">
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <a href="{{ route('admin.newsletters.create') }}"
+                                    class="btn btn-primary w-100 py-3">Create
+                                    Newsletter</a>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <a href="#" class="btn btn-success w-100 py-3">View Subscribers</a>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <a href="#" class="btn btn-warning w-100 py-3 text-white">Send Newsletter</a>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                              <a href="#" class="btn btn-danger w-100 py-3">Settings</a>
+                        </div>
+                  </div>
+
             </div>
       </div>
+
+      <!-- Chart.js -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+            const ctx = document.getElementById('subscribersChart').getContext('2d');
+        const subscribersChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($months) !!},
+                datasets: [{
+                    label: 'New Subscribers',
+                    data: {!! json_encode($newSubscribers) !!},
+                    borderColor: 'rgb(13,110,253)',
+                    backgroundColor: 'rgba(13,110,253,0.2)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+      </script>
+
 </x-app-layout>

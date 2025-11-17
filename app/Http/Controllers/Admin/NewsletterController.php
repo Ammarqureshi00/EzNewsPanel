@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 class NewsletterController extends Controller
 {
 
+    public function index()
+    {
+        $newsletters = Newsletter::all();
+        return  view('admin.newsletters.index', compact('newsletters'));
+    }
     public function create()
     {
         return view('admin.newsletters.create');
@@ -58,7 +63,7 @@ class NewsletterController extends Controller
 
         $newsletter->update($data);
 
-        return redirect()->route('newsletters.index')->with('success', 'Newsletter updated successfully!');
+        return redirect()->route('admin.newsletters.index')->with('success', 'Newsletter updated successfully!');
     }
 
     public function destroy(Newsletter $newsletter)
