@@ -16,6 +16,6 @@ class Subscriber extends Model
 
     public function newsletters()
     {
-        return $this->belongsToMany(Newsletter::class, 'newsletter_subscriber');
+        return $this->belongsToMany(Newsletter::class, 'news_subscriber');
     }
 }

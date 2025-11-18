@@ -15,6 +15,15 @@ class Newsletter extends Model
     ];
     public function subscribers()
     {
-        return $this->belongsToMany(Subscriber::class, 'newsletter_subscriber');
+        return $this->belongsToMany(Subscriber::class, 'news_subscriber');
+    }
+    public function categories()
+    {
+        return $this->morphToMany(Category::class, 'categorizable');
+    }
+
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 }
