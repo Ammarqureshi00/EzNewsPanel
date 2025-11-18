@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Newsletter extends Model
 {
     use HasFactory;
+    public $table = 'news';
     protected $fillable = [
         'title',
         'content',
