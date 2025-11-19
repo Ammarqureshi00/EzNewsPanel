@@ -4,71 +4,119 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Newsletter;
+use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NewsletterController extends Controller
 {
-
     public function index()
     {
-        $newsletters = Newsletter::all();
-        return  view('admin.newsletters.index', compact('newsletters'));
+        $newsletters = Newsletter::with(['categories', 'tags'])->get();
+
+        return view('admin.newsletters.index', compact('newsletters'));
     }
+
     public function create()
     {
-        return view('admin.newsletters.create');
+        $categories = Category::all();
+        $tags       = Tag::all();
+
+        return view('admin.newsletters.create', compact('categories', 'tags'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:30'
+            'title'       => 'required|string|max:255',
+            'content'     => 'required|string',
+            'categories'  => 'required|array',
+            'categories.*' => 'exists:categories,id',
+            'tags'        => 'nullable|array',
+            'tags.*'      => 'exists:tags,id',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $data = $request->only(['title', 'content']);
+        // Generate slug
+        $slug = Str::slug($request->title);
 
+        $data = [
+            'title'   => $request->title,
+            'content' => $request->input('content'),
+            'slug'    => $slug,
+        ];
+
+        // Image Upload
         if ($request->hasFile('image')) {
-            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('uploads/newsletters'), $filename);
+            $filename = time() . '_' . $request->image->getClientOriginalName();
+            $request->image->move(public_path('uploads/newsletters'), $filename);
             $data['image'] = $filename;
         }
 
-        Newsletter::create($data);
+        // Create newsletter
+        $newsletter = Newsletter::create($data);
 
-        return redirect()->route('admin.newsletters.index')->with('success', 'Newsletter created successfully!');
+        // Attach categories & tags
+        $newsletter->categories()->sync($request->categories);
+        $newsletter->tags()->sync($request->tags ?? []);
+
+        return redirect()->route('admin.newsletters.index')
+            ->with('success', 'Newsletter created successfully!');
     }
 
+    // Route Model Binding uses: admin/newsletters/{newsletter}/edit
     public function edit(Newsletter $newsletter)
     {
-        return view('admin.newsletters.edit', compact('newsletter'));
+        $categories = Category::all();
+        $tags       = Tag::all();
+
+        return view('admin.newsletters.edit', compact('newsletter', 'categories', 'tags'));
     }
 
     public function update(Request $request, Newsletter $newsletter)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'title'       => 'required|string|max:255',
+            'content'     => 'required|string',
+            'categories'  => 'required|array',
+            'categories.*' => 'exists:categories,id',
+            'tags'        => 'nullable|array',
+            'tags.*'      => 'exists:tags,id',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $data = $request->only(['title', 'content']);
+        // Update slug too
+        $slug = Str::slug($request->title);
 
+        $data = [
+            'title'   => $request->title,
+            'content' => $request->input('content'),
+            'slug'    => $slug
+        ];
+
+        // Update image if new one uploaded
         if ($request->hasFile('image')) {
-            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('uploads/newsletters'), $filename);
+            $filename = time() . '_' . $request->image->getClientOriginalName();
+            $request->image->move(public_path('uploads/newsletters'), $filename);
             $data['image'] = $filename;
         }
 
+        // Update newsletter
         $newsletter->update($data);
 
-        return redirect()->route('admin.newsletters.index')->with('success', 'Newsletter updated successfully!');
+        // Sync relations
+        $newsletter->categories()->sync($request->categories);
+        $newsletter->tags()->sync($request->tags ?? []);
+
+        return redirect()->route('admin.newsletters.index')
+            ->with('success', 'Newsletter updated successfully!');
     }
 
     public function destroy(Newsletter $newsletter)
     {
         $newsletter->delete();
+
         return back()->with('success', 'Newsletter deleted successfully!');
     }
 }

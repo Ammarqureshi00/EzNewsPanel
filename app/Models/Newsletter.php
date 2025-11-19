@@ -13,6 +13,7 @@ class Newsletter extends Model
         'title',
         'content',
         'image',
+        'slug',
     ];
     public function subscribers()
     {
