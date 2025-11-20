@@ -1,16 +1,7 @@
 <x-app-layout>
       <div class="flex">
             <!-- Sidebar -->
-            <div class="w-64 bg-gray-800 text-white min-h-screen p-6">
-                  <h4 class="text-center mb-4 text-lg font-semibold">Admin Panel</h4>
-                  <a href="{{ route('admin.dashboard') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Dashboard</a>
-                  <a href="{{ route('admin.categories.index') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">All Categories</a>
-                  <a href="{{ route('admin.categories.create') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">Add Category</a>
-            </div>
-
+            <x-admin-sidebar />
             <!-- Main Content -->
             <div class="flex-1 p-6 bg-gray-100">
                   <h2>Add Category</h2>

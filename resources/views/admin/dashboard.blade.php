@@ -2,48 +2,8 @@
 
       <div class="flex">
             <!-- Sidebar -->
-            <div class="w-64 bg-gray-800 text-white min-h-screen p-6">
-                  <h4 class="text-center mb-4 text-lg font-semibold">Admin Panel</h4>
+            <x-admin-sidebar />
 
-                  <a href="{{ route('admin.dashboard') }}" class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        Dashboard
-                  </a>
-
-                  <a href="{{ route('admin.newsletters.index') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        All Newsletters
-                  </a>
-
-                  <a href="{{ route('admin.newsletters.create') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        Create Newsletter
-                  </a>
-
-                  <hr class="border-gray-600 my-3">
-
-                  <a href="{{ route('admin.categories.index') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        All Categories
-                  </a>
-
-                  <a href="{{ route('admin.categories.create') }}"
-                        class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        Create Category
-                  </a>
-
-                  <a href="{{ route('admin.tags.index') }}" class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        All Tags
-                  </a>
-
-                  <a href="{{ route('admin.tags.create') }}" class="block py-2 px-4 rounded hover:bg-gray-700 mb-2">
-                        Create Tag
-                  </a>
-
-                  <hr class="border-gray-600 my-3">
-
-                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700">Settings</a>
-                  <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700 mt-2">Logout</a>
-            </div>
             <div class="flex-1 p-6 bg-gray-100">
 
                   <!-- Welcome Message -->
