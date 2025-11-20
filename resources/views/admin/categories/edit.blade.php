@@ -7,7 +7,7 @@
             <div class="flex-1 p-6 bg-gray-100">
                   <h2>Edit Category</h2>
 
-                  <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
+                  <form action="{{ route('admin.categories.update', $category->slug) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">

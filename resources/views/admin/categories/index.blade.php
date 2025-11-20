@@ -30,9 +30,9 @@
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->slug }}</td>
                                     <td>
-                                          <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                          <a href="{{ route('admin.categories.edit', $category->slug) }}"
                                                 class="btn btn-sm btn-warning">Edit</a>
-                                          <form action="{{ route('admin.categories.destroy', $category->id) }}"
+                                          <form action="{{ route('admin.categories.destroy', $category->slug) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')

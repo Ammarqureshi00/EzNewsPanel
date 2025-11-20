@@ -8,17 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Newsletter extends Model
 {
     use HasFactory;
+
     public $table = 'news';
+
     protected $fillable = [
         'title',
         'content',
         'image',
         'slug',
     ];
+
     public function subscribers()
     {
         return $this->belongsToMany(Subscriber::class, 'news_subscriber');
     }
+
     public function categories()
     {
         return $this->morphToMany(Category::class, 'categorizable');
@@ -27,5 +31,13 @@ class Newsletter extends Model
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    /**
+     * Use slug for route model binding
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

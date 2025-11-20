@@ -14,4 +14,8 @@ class Tag extends Model
     {
         return $this->morphedByMany(Newsletter::class, 'taggable');
     }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

@@ -14,4 +14,8 @@ class Category extends Model
     {
         return $this->morphedByMany(Newsletter::class, 'categorizable');
     }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

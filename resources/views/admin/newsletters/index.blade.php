@@ -55,12 +55,12 @@
                                                 </td>
 
                                                 <td class="border px-4 py-2">
-                                                      <a href="{{ route('admin.newsletters.edit', $item->id) }}"
+                                                      <a href="{{ route('admin.newsletters.edit', $item->slug) }}"
                                                             class="btn btn-warning btn-sm">
                                                             Edit
                                                       </a>
 
-                                                      <form action="{{ route('admin.newsletters.destroy', $item->id) }}"
+                                                      <form action="{{ route('admin.newsletters.destroy', $item->slug) }}"
                                                             method="POST" class="inline-block">
                                                             @csrf
                                                             @method('DELETE')

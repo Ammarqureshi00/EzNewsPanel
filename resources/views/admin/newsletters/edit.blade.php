@@ -32,7 +32,7 @@
 
                         <div class="card-body">
 
-                              <form action="{{ route('admin.newsletters.update', $newsletter->id) }}" method="POST"
+                              <form action="{{ route('admin.newsletters.update', $newsletter->slug) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
