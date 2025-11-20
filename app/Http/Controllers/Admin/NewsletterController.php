@@ -95,12 +95,18 @@ class NewsletterController extends Controller
             'slug'    => $slug
         ];
 
-        // Update image if new one uploaded
         if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($newsletter->image && file_exists(public_path('uploads/newsletters/' . $newsletter->image))) {
+                unlink(public_path('uploads/newsletters/' . $newsletter->image));
+            }
+
+            // Save new image
             $filename = time() . '_' . $request->image->getClientOriginalName();
             $request->image->move(public_path('uploads/newsletters'), $filename);
             $data['image'] = $filename;
         }
+
 
         // Update newsletter
         $newsletter->update($data);
