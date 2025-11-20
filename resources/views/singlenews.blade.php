@@ -13,7 +13,7 @@
                               <div class="card-text mb-4">{!! nl2br(e($newsletter->content)) !!}</div>
 
                               {{-- Subscription Form --}}
-                              <form action="{{ route('subscribe', $newsletter->id) }}" method="POST">
+                              <form action="{{ route('subscribe', $newsletter->slug) }}" method="POST">
                                     @csrf
                                     <div class="input-group mb-3">
                                           <input type="text" class="form-control" value="{{ old('name') }}" name="name"

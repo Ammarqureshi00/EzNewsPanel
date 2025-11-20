@@ -23,7 +23,7 @@
                                           <h5 class="card-title">{{ $newsletter->title }}</h5>
                                           <p class="card-text">{{ Str::limit($newsletter->content, 100) }}</p>
 
-                                          <a href="{{ route('newsletter.show', $newsletter->id) }}"
+                                          <a href="{{ route('newsletter.show', $newsletter->slug) }}"
                                                 class="btn btn-primary mt-auto">Read More</a>
                                     </div>
 
@@ -35,7 +35,6 @@
                         @empty
                         <p class="text-center text-muted">No newsletters available yet.</p>
                         @endforelse
-
                   </div>
             </div>
       </div>

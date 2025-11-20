@@ -22,16 +22,16 @@
                                     <th>Actions</th>
                               </tr>
                         </thead>
-                        <tbody>
+                        <tbody>s
                               @forelse($tags as $tag)
                               <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $tag->name }}</td>
                                     <td>{{ $tag->slug }}</td>
                                     <td>
-                                          <a href="{{ route('admin.tags.edit', $tag->id) }}"
+                                          <a href="{{ route('admin.tags.edit', $tag->slug) }}"
                                                 class="btn btn-sm btn-warning">Edit</a>
-                                          <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST"
+                                          <form action="{{ route('admin.tags.destroy', $tag->slug) }}" method="POST"
                                                 class="d-inline">
                                                 @csrf
                                                 @method('DELETE')

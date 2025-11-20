@@ -48,7 +48,11 @@
             ⚙️ <span>Settings</span>
       </a>
 
-      <a href="#" class="d-flex align-items-center gap-2 p-2 mt-2 rounded text-white text-decoration-none">
-            🚪 <span>Logout</span>
-      </a>
+      <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit"
+                  class="d-flex align-items-center px-3 py-2 mt-2 rounded text-white btn btn-link text-start w-100">
+                  🚪 <span class="ms-2">Logout</span>
+            </button>
+      </form>
 </div>

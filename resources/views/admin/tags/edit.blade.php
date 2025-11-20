@@ -6,7 +6,7 @@
             <div class="flex-1 p-6 bg-gray-100">
                   <h2>Edit Tag</h2>
 
-                  <form action="{{ route('admin.tags.update', $tag->id) }}" method="POST">
+                  <form action="{{ route('admin.tags.update', $tag->slug) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
