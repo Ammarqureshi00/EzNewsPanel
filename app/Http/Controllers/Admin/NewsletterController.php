@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Newsletter;
 use App\Models\Category;
 use App\Models\Tag;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -125,4 +126,5 @@ class NewsletterController extends Controller
 
         return back()->with('success', 'Newsletter deleted successfully!');
     }
+    
 }
