@@ -26,45 +26,50 @@ class HomeController extends Controller
     // AJAX Subscription Handler
     public function subscribe(Request $request, Newsletter $newsletter)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email'
-        ]);
-
-        // 1. Check if subscriber exists
-        $subscriber = DB::table('news_subscriber')
-            ->where('email', $request->email)
-            ->first();
-
-        $isNewSubscriber = false;
-
-        if (!$subscriber) {
-            // 2. Create new subscriber (guest)
-            $subscriberId = DB::table('news_subscriber')->insertGetId([
-                'name' => $request->name,
-                'email' => $request->email,
-                'created_at' => now(),
-                'updated_at' => now()
+        try {
+            $request->validate([
+                'name'  => 'required|string|max:255',
+                'email' => 'required|email|max:255',
             ]);
 
-            $isNewSubscriber = true;
-        } else {
-            // Use existing subscriber id
-            $subscriberId = $subscriber->id;
+            $user = \App\Models\User::where('email', $request->email)->first();
+
+            if ($user) {
+                // Registered user: add to subscriptions
+                $user->subscribed_newsletters()->syncWithoutDetaching([$newsletter->id]);
+
+                // Optional: notify admin
+                Notification::route('mail', 'admin@example.com')
+                    ->notify(new NewSubscriptionNotification($user->name, $user->email));
+
+                return response()->json(['success' => true]);
+            }
+
+            // Guest subscriber
+            $subscriber = Subscriber::firstOrCreate(
+                ['email' => $request->email],
+                ['name' => $request->name]
+            );
+
+            // Add to news_subscription
+            DB::table('news_subscription')->updateOrInsert(
+                ['news_id' => $newsletter->id, 'subscriber_id' => $subscriber->id],
+                ['created_at' => now(), 'updated_at' => now()]
+            );
+
+            // Optional: notify admin and subscriber
+            Notification::route('mail', 'admin@example.com')
+                ->notify(new NewSubscriptionNotification($subscriber->name, $subscriber->email));
+
+            Notification::route('mail', $subscriber->email)
+                ->notify(new SubscriptionConfirmedNotification());
+
+            // Show popup to guest user
+            return response()->json(['register_popup' => true]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong. Please try again.'], 500);
         }
-
-        // 3. Store subscription in news_subscription table
-        DB::table('news_subscription')->insert([
-            'news_id' => $newsletter->id,
-            'subscriber_id' => $subscriberId,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        // 4. Return response
-        return response()->json([
-            'success' => true,
-            'register_popup' => $isNewSubscriber
-        ]);
     }
 }

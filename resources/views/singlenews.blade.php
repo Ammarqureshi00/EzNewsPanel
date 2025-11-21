@@ -9,8 +9,25 @@
 
                         <div class="card-body">
                               <h3 class="card-title fw-bold">{{ $newsletter->title }}</h3>
+                              <p>{{ $newsletter->content }}</p>
+                              @if($newsletter->categories->count() > 0)
+                              <p>
+                                    <span class="badge bg-primary">
+                                          {{ $newsletter->categories->pluck('name')->join(', ') }}
+                                    </span>
+                              </p>
+                              @endif
+                              @if($newsletter->tags->count() > 0)
+                              <p>
+                                    <span class="badge bg-primary">
+                                          {{ $newsletter->tags->pluck('name')->join(', ') }}
+                                    </span>
+                              </p>
+                              @endif
                               <p class="text-muted mb-3">{{ $newsletter->created_at->format('d M Y') }}</p>
                               <div class="card-text mb-4">{!! nl2br(e($newsletter->content)) !!}</div>
+
+
                               {{-- Subscription Form --}}
                               <form id="subscribeForm" action="{{ route('subscribe', $newsletter->slug) }}"
                                     method="POST">
@@ -31,42 +48,52 @@
             </div>
       </div>
 </x-app-layout>
+
 <script>
       document.getElementById('subscribeForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    let subscribeMessage = document.getElementById('subscribeMessage');
+    subscribeMessage.innerText = "";
+
     let formData = new FormData(this);
-    formData.append('_token', '{{ csrf_token() }}');  // IMPORTANT FIX
 
     fetch(this.action, {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            "Accept": "application/json" // 👈 VERY IMPORTANT
+        }
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
 
-        if (data.errors) {
-            alert(Object.values(data.errors).join("\n"));
-            return;
-        }
-
+        // 1️⃣ Register popup for guest
         if (data.register_popup) {
-            if (confirm("You are not registered. Do you want to register?")) {
+            let go = confirm("You subscribed as a guest. Want to register?");
+            if (go) {
                 window.location.href = "{{ route('register') }}";
             } else {
-                document.getElementById('subscribeMessage').innerText = "Subscribed as guest!";
+                subscribeMessage.innerText = "Subscribed as guest!";
             }
             return;
         }
 
+        // 2️⃣ Success Message
         if (data.success) {
-            document.getElementById('subscribeMessage').innerText = "Subscribed successfully!";
+            subscribeMessage.innerText = data.message;
             return;
         }
+
+        // 3️⃣ Errors
+        if (data.message) {
+            alert(data.message);
+        }
+
     })
     .catch(err => {
-        console.error("Fetch error:", err);
-        alert("Something went wrong. Please try again.");
+        console.error(err);
+        alert("Something went wrong!");
     });
 });
 </script>

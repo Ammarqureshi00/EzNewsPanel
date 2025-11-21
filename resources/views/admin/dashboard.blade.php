@@ -97,7 +97,8 @@
                                     Newsletter</a>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
-                              <a href="#" class="btn btn-success w-100 py-3">View Subscribers</a>
+                              <a href="{{ route('admin.subscribers') }}" class="btn btn-success w-100 py-3">View
+                                    Subscribers</a>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
                               <a href="#" class="btn btn-warning w-100 py-3 text-white">Send Newsletter</a>

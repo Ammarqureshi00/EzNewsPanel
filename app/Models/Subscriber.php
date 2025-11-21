@@ -10,12 +10,13 @@ class Subscriber extends Model
     use HasFactory; //
 
     protected $fillable = [
-        'email',
         'name',
+        'email',
+
     ];
 
-    public function newsletters()
+    public function newsletter()
     {
-        return $this->belongsToMany(Newsletter::class, 'news_subscriber');
+        return $this->belongsToMany(Newsletter::class, 'news_subscription', 'subscriber_id', 'news_id');
     }
 }
