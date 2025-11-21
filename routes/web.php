@@ -11,7 +11,9 @@ use App\Http\Controllers\Subsriber\SubscribersController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/newsletter/{newsletter}', [HomeController::class, 'show'])->name('newsletter.show');
-Route::post('/newsletter/{newsletter}/subscribe', [HomeController::class, 'subscribe'])->name('subscribe');
+Route::post('/newsletter/{newsletter:slug}/subscribe', [HomeController::class, 'subscribe'])
+    ->name('subscribe');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
