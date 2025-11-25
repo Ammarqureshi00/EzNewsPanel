@@ -98,11 +98,13 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between mt-4">
-                                          <button type="submit" class="btn btn-primary">Create Newsletter</button>
-
                                           <a href="{{ route('admin.newsletters.index') }}" class="btn btn-secondary">
                                                 &larr; Back
                                           </a>
+
+                                          <button type="submit" class="btn btn-primary">Create Newsletter</button>
+
+
                                     </div>
 
                               </form>

@@ -97,7 +97,7 @@
                                           <input type="file" id="image" name="image" class="form-control">
                                     </div>
 
-                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                    <div class="d-flex justify-content-between mt-4">
                                           <a href="{{ route('admin.newsletters.index') }}"
                                                 class="btn btn-secondary px-4">← Back</a>
                                           <button type="submit" class="btn btn-primary px-4">Update Newsletter</button>

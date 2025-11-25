@@ -54,7 +54,7 @@
                                                       {{ $item->created_at->format('d M Y') }}
                                                 </td>
 
-                                                <td class="border px-4 py-2">
+                                                <td class="border px-6 py-6 d-flex space-x-2 gap-3">
                                                       <a href="{{ route('admin.newsletters.edit', $item->slug) }}"
                                                             class="btn btn-warning btn-sm">
                                                             Edit

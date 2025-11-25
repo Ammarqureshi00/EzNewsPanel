@@ -126,5 +126,4 @@ class NewsletterController extends Controller
 
         return back()->with('success', 'Newsletter deleted successfully!');
     }
-    
 }
