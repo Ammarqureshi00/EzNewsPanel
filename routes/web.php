@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\TagController;
@@ -13,7 +14,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/newsletter/{newsletter}', [HomeController::class, 'show'])->name('newsletter.show');
 Route::post('/newsletter/{newsletter:slug}/subscribe', [HomeController::class, 'subscribe'])
     ->name('subscribe');
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -27,10 +27,19 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
+
+    // Subscribers (Admin Access)
+    Route::get('/admin/subscribers', [AdminSubscriberController::class, 'index'])
+        ->name('admin.subscribers');
+    Route::delete('/admin/subscribers/{id}', [AdminSubscriberController::class, 'destroy'])
+        ->name('admin.subscribers.destroy');
+
     Route::resource('admin/newsletters', NewsletterController::class)
         ->names('admin.newsletters');
+
     Route::resource('admin/categories', CategoryController::class)
         ->names('admin.categories');
+
     Route::resource('admin/tags', TagController::class)
         ->names('admin.tags');
 });
