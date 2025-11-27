@@ -32,7 +32,7 @@ class HomeController extends Controller
                 'email' => 'required|email|max:255',
             ]);
 
-            $user = \App\Models\User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->first();
 
             if ($user) {
                 // Registered user: add to subscriptions
