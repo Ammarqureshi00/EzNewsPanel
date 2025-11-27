@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth',   'role:admin'])->group(function () {
 
     Route::get('admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/tags', TagController::class)
         ->names('admin.tags');
 });
-Route::middleware(['auth', 'subscriber'])->group(function () {
+Route::middleware(['auth', 'role:subscriber'])->group(function () {
 
     Route::get('subscribers/dashboard', [SubscribersController::class, 'index'])
         ->name('subscribers.dashboard');
