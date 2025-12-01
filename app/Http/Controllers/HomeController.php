@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Notification;
 
 class HomeController extends Controller
 {
-    public function index()
+    public  function index()
     {
         $newsletters = Newsletter::latest()->get();
         return view('welcome', compact('newsletters'));
@@ -31,18 +31,17 @@ class HomeController extends Controller
                 'name'  => 'required|string|max:255',
                 'email' => 'required|email|max:255',
             ]);
-
+            // check users table for existing user
             $user = User::where('email', $request->email)->first();
-
+            //  user is exits
             if ($user) {
-                // Registered user: add to subscriptions
+
                 $user->subscribed_newsletters()->syncWithoutDetaching([$newsletter->id]);
 
-                // Optional: notify admin
-                Notification::route('mail', 'admin@example.com')
-                    ->notify(new NewSubscriptionNotification($user->name, $user->email));
-
-                return response()->json(['success' => true]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Subscribed successfully!'
+                ]);
             }
 
             // Guest subscriber
@@ -50,26 +49,20 @@ class HomeController extends Controller
                 ['email' => $request->email],
                 ['name' => $request->name]
             );
-
-            // Add to news_subscription
+            // Attach newsletter to subscriber
             DB::table('news_subscription')->updateOrInsert(
                 ['news_id' => $newsletter->id, 'subscriber_id' => $subscriber->id],
                 ['created_at' => now(), 'updated_at' => now()]
             );
 
-            // Optional: notify admin and subscriber
-            Notification::route('mail', 'admin@example.com')
-                ->notify(new NewSubscriptionNotification($subscriber->name, $subscriber->email));
-
-            Notification::route('mail', $subscriber->email)
-                ->notify(new SubscriptionConfirmedNotification());
-
-            // Show popup to guest user
-            return response()->json(['register_popup' => true]);
+            return response()->json([
+                'register_popup' => true,
+                'message' => 'You subscribed successfully!'
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Something went wrong. Please try again.'], 500);
+            return response()->json(['error' => 'Something went wrong.'], 500);
         }
     }
 }
