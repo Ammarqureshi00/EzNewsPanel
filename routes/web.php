@@ -11,8 +11,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Subsriber\SubscribersController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/newsletter/{newsletter}', [HomeController::class, 'show'])->name('newsletter.show');
-Route::post('/newsletter/{newsletter:slug}/subscribe', [HomeController::class, 'subscribe'])
+Route::get('/news/{newsletter:slug}', [HomeController::class, 'show'])->name('news.show');
+Route::post('/news/{newsletter:slug}/subscribe', [HomeController::class, 'subscribe'])
     ->name('subscribe');
 Route::get('/dashboard', function () {
     return view('dashboard');
