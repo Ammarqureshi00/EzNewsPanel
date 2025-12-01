@@ -37,6 +37,9 @@ class HomeController extends Controller
             if ($user) {
 
                 $user->subscribed_newsletters()->syncWithoutDetaching([$newsletter->id]);
+                
+                // Send subscription confirmation notification
+                $user->notify(new SubscriptionConfirmedNotification($newsletter));
 
                 return response()->json([
                     'success' => true,
@@ -49,11 +52,16 @@ class HomeController extends Controller
                 ['email' => $request->email],
                 ['name' => $request->name]
             );
+            
             // Attach newsletter to subscriber
             DB::table('news_subscription')->updateOrInsert(
                 ['news_id' => $newsletter->id, 'subscriber_id' => $subscriber->id],
                 ['created_at' => now(), 'updated_at' => now()]
             );
+            
+            // Send subscription confirmation notification
+            Notification::route('mail', $subscriber->email)
+                ->notify(new SubscriptionConfirmedNotification($newsletter));
 
             return response()->json([
                 'register_popup' => true,
