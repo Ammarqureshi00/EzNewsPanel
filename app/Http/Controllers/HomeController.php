@@ -72,6 +72,9 @@ class HomeController extends Controller
                 $subscriber->email,
                 $subscriber->name
             ));
+            // Send notification to admin(s)
+         $admins = User::where('role', 'admin')->get(); // adjust role column if different
+          Notification::send($admins, new NewSubscriptionNotification($newsletter, $subscriber));
 
         return response()->json([
             'register_popup' => true,

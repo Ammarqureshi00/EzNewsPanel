@@ -10,7 +10,7 @@
                   <div class="card shadow-sm">
                         <div class="card-body">
                               <a href="{{ route('admin.dashboard') }}" class="btn btn-primary mb-4">
-                                    Back to Dashboard
+                                    GO Back to Dashboard
                               </a>
 
                               <div class="table-responsive">
@@ -41,13 +41,14 @@
                                                       <td>
                                                             <form action="{{ route('admin.subscribers.destroy', $sub->id) }}"
                                                                   method="POST"
-                                                                  onsubmit="return confirm('Are you sure you want to delete this subscriber?');">
+                                                                  class="delete-subscriber-form">
                                                                   @csrf
                                                                   @method('DELETE')
                                                                   <button type="submit" class="btn btn-sm btn-danger">
                                                                         <i class="bi bi-trash"></i> Delete
                                                                   </button>
                                                             </form>
+
                                                       </td>
                                                 </tr>
                                                 @endforeach
