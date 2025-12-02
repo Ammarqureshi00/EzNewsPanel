@@ -104,7 +104,7 @@
                               <a href="#" class="btn btn-warning w-100 py-3 text-white">Send Newsletter</a>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
-                              <a href="#" class="btn btn-danger w-100 py-3">Settings</a>
+                                <a href="{{ route('profile.edit') }}" class="btn btn-danger w-100 py-3">Settings</a>
                         </div>
                   </div>
 

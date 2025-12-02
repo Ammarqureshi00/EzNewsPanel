@@ -50,51 +50,74 @@
 </x-app-layout>
 
 <script>
-      document.getElementById('subscribeForm').addEventListener('submit', function(e) {
-e.preventDefault();
+     document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-let subscribeMessage = document.getElementById('subscribeMessage');
-subscribeMessage.innerText = "";
+    let subscribeMessage = document.getElementById('subscribeMessage');
+    subscribeMessage.innerText = "";
 
-let formData = new FormData(this);
+    let formData = new FormData(this);
 
-fetch(this.action, {
-method: 'POST',
-body: formData,
-headers: {
-"Accept": "application/json"
-}
-})
-.then(response => response.json())
-.then(data => {
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            "Accept": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
 
-// Guest user popup
-if (data.register_popup) {
-let confirmRegister = confirm(data.message + "\nDo you want to register?");
-if (confirmRegister) {
-window.location.href = "{{ route('register') }}";
-} else {
-subscribeMessage.innerText = data.message;
-}
-return;
-}
+        // Guest user popup
+        if (data.register_popup) {
+            Swal.fire({
+                title: 'Notice',
+                text: data.message,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, register',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('register') }}";
+                } else {
+                    subscribeMessage.innerText = data.message;
+                }
+            });
+            return;
+        }
 
-// Success message
-if (data.success) {
-subscribeMessage.innerText = data.message;
-return;
-}
+        // Success message
+        if (data.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: data.message,
+                icon: 'success',
+                timer: 2500,
+                showConfirmButton: false
+            });
+            return;
+        }
 
-// Validation errors
-if (data.errors) {
-alert(Object.values(data.errors).flat().join("\n"));
-return;
-}
+        // Validation errors
+        if (data.errors) {
+            Swal.fire({
+                title: 'Error!',
+                html: Object.values(data.errors).flat().join("<br>"),
+                icon: 'error'
+            });
+            return;
+        }
 
-})
-.catch(err => {
-console.error(err);
-alert("Something went wrong!");
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Something went wrong!',
+            icon: 'error'
+        });
+    });
 });
-});
+
 </script>

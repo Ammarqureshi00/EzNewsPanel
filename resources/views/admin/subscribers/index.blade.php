@@ -10,7 +10,7 @@
                   <div class="card shadow-sm">
                         <div class="card-body">
                               <a href="{{ route('admin.dashboard') }}" class="btn btn-primary mb-4">
-                                    GO Back to Dashboard
+                                    Back to Dashboard
                               </a>
 
                               <div class="table-responsive">
