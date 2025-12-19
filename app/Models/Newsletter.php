@@ -20,17 +20,17 @@ class Newsletter extends Model
 
     public function subscribers()
     {
-        return $this->belongsToMany(Subscriber::class, 'news_subscription');
+        return $this->belongsToMany(Subscriber::class, 'news_subscription'); // many-to-many
     }
 
     public function categories()
     {
-        return $this->morphToMany(Category::class, 'categorizable');
+        return $this->morphToMany(Category::class, 'categorizable'); // polymorphic many-to-many
     }
 
     public function tags()
     {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->morphToMany(Tag::class, 'taggable'); // polymorphic many-to-many
     }
 
     /**

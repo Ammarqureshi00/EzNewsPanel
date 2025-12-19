@@ -12,7 +12,7 @@ class Category extends Model
     ];
     public function newsletters()
     {
-        return $this->morphedByMany(Newsletter::class, 'categorizable');
+        return $this->morphedByMany(Newsletter::class, 'categorizable');  // shared polymorphic many-to-many
     }
     public function getRouteKeyName()
     {

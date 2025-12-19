@@ -12,7 +12,7 @@ class Tag extends Model
     ];
     public function newsletters()
     {
-        return $this->morphedByMany(Newsletter::class, 'taggable');
+        return $this->morphedByMany(Newsletter::class, 'taggable'); // shared polymorphic many-to-many
     }
     public function getRouteKeyName()
     {
