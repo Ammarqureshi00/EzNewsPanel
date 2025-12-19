@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use realrashid\SweetAlert\Facades\Alert;
 
 class RegisteredUserController extends Controller
 {
@@ -44,6 +45,8 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        Alert::success('Registred  Successfully', 'Welcome to EzNewsPanel');
 
         return redirect(route('dashboard', absolute: false));
     }

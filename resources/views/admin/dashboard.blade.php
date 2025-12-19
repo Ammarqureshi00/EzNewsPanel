@@ -33,7 +33,7 @@
                                           <h6 class="text-muted">Total Subscribers</h6>
                                           <h3 class="fw-bold">{{ $subscribers->count() }}</h3>
                                     </div>
-                              </div>x
+                              </div>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
                               <div class="card shadow-sm">
@@ -107,7 +107,6 @@
                   <a href="#" class="btn btn-danger w-100 py-3">Settings</a>
             </div>
       </div>
-
       </div>
       </div>
 </x-app-layout>

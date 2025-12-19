@@ -12,8 +12,9 @@ class SubscriptionConfirmedNotification extends Notification implements ShouldQu
     use Queueable;
 
     public $newsletter;
-    public $subscriberEmail;
     public $subscriberName;
+    public $subscriberEmail;
+
 
     /**
      * Create a new notification instance.
@@ -39,7 +40,7 @@ class SubscriptionConfirmedNotification extends Notification implements ShouldQu
     public function toMail($notifiable)
     {
         $name = $this->subscriberName ?? 'Subscriber';
-        
+
         return (new MailMessage)
             ->subject('Subscription Confirmed - ' . $this->newsletter->title)
             ->greeting('Hello ' . $name)
