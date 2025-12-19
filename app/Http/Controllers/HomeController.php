@@ -24,66 +24,66 @@ class HomeController extends Controller
         return view('singlenews', compact('newsletter'));
     }
     // AJAX Subscription Handler
-   public function subscribe(Request $request, Newsletter $newsletter)
-{
-    try {
-        // Validate request
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-        ]);
+    public function subscribe(Request $request, Newsletter $newsletter)
+    {
+        try {
+            // Validate request
+            $request->validate([
+                'name'  => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+            ]);
 
-        // Check if email exists in users table
-        $user = User::where('email', $request->email)->first();
+            // Check if email exists in users table
+            $user = User::where('email', $request->email)->first();
 
-        if ($user) {
-            // Attach newsletter to logged-in user
-            $user->subscribed_newsletters()->syncWithoutDetaching([$newsletter->id]);
+            if ($user) {
+                // Attach newsletter to logged-in user
+                $user->subscribed_newsletters()->syncWithoutDetaching([$newsletter->id]);
+
+                // Send subscription confirmation notification
+                $user->notify(new SubscriptionConfirmedNotification(
+                    $newsletter,
+                    $user->email,
+                    $user->name
+                ));
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Subscribed successfully!'
+                ]);
+            }
+
+            // Guest subscriber
+            $subscriber = Subscriber::firstOrCreate(
+                ['email' => $request->email],
+                ['name' => $request->name]
+            );
+
+            // Attach newsletter to subscriber
+            DB::table('news_subscription')->updateOrInsert(
+                ['news_id' => $newsletter->id, 'subscriber_id' => $subscriber->id],
+                ['created_at' => now(), 'updated_at' => now()]
+            );
 
             // Send subscription confirmation notification
-            $user->notify(new SubscriptionConfirmedNotification(
-                $newsletter,
-                $user->email,
-                $user->name
-            ));
+            Notification::route('mail', $subscriber->email)
+                ->notify(new SubscriptionConfirmedNotification(
+                    $newsletter,
+                    $subscriber->email,
+                    $subscriber->name
+                ));
+            //     // Send notification to admin(s)
+            //  $admins = User::where('role', 'admin')->get(); // adjust role column if different
+            //   Notification::send($admins, new NewSubscriptionNotification($newsletter, $subscriber));
 
             return response()->json([
-                'success' => true,
-                'message' => 'Subscribed successfully!'
+                'register_popup' => true,
+                'message' => 'You subscribed successfully!'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong.'], 500);
         }
-
-        // Guest subscriber
-        $subscriber = Subscriber::firstOrCreate(
-            ['email' => $request->email],
-            ['name' => $request->name]
-        );
-
-        // Attach newsletter to subscriber
-        DB::table('news_subscription')->updateOrInsert(
-            ['news_id' => $newsletter->id, 'subscriber_id' => $subscriber->id],
-            ['created_at' => now(), 'updated_at' => now()]
-        );
-
-        // Send subscription confirmation notification
-        Notification::route('mail', $subscriber->email)
-            ->notify(new SubscriptionConfirmedNotification(
-                $newsletter,
-                $subscriber->email,
-                $subscriber->name
-            ));
-            // Send notification to admin(s)
-         $admins = User::where('role', 'admin')->get(); // adjust role column if different
-          Notification::send($admins, new NewSubscriptionNotification($newsletter, $subscriber));
-
-        return response()->json([
-            'register_popup' => true,
-            'message' => 'You subscribed successfully!'
-        ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json(['errors' => $e->errors()], 422);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Something went wrong.'], 500);
     }
-}
 }

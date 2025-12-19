@@ -33,7 +33,7 @@
                                           <h6 class="text-muted">Total Subscribers</h6>
                                           <h3 class="fw-bold">{{ $subscribers->count() }}</h3>
                                     </div>
-                              </div>
+                              </div>x
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
                               <div class="card shadow-sm">
